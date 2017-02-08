@@ -242,18 +242,18 @@ if __name__ == "__main__":
 			# Increment the record counter
 			record_num += 1
 				
-			# Elasticsearch bulk insert
-			if record_num >= bulk_insert_count:
-				
-				try:
-					helpers.bulk(es,flow_dic)
-					logging.info(str(len(flow_dic))+" flow(s) uploaded to Elasticsearch - OK")
-				except ValueError as bulk_index_error:
-					logging.critical(str(len(flow_dic))+" flow(s) DROPPED, unable to index flows - FAIL")
-					logging.critical(bulk_index_error.message)
+		# Elasticsearch bulk insert
+		if record_num >= bulk_insert_count:
+			
+			try:
+				helpers.bulk(es,flow_dic)
+				logging.info(str(record_num)+" flow(s) uploaded to Elasticsearch - OK")
+			except ValueError as bulk_index_error:
+				logging.critical(str(record_num)+" flow(s) DROPPED, unable to index flows - FAIL")
+				logging.critical(bulk_index_error.message)
 
-				# Reset flow_dic
-				flow_dic = []
+			# Reset flow_dic
+			flow_dic = []
 
-				# Reset the record counter
-				record_num = 0
+			# Reset the record counter
+			record_num = 0
