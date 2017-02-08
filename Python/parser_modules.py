@@ -642,6 +642,7 @@ class netflowv9_parse(object):
     from struct import unpack
     from collections import OrderedDict
     from field_types import v9_fields
+    #import logging
     
     def __init__(self):
         return
@@ -672,7 +673,7 @@ class netflowv9_parse(object):
             (template_id, template_field_count) = self.unpack('!HH',packed_data[pointer:pointer+4])
             pointer += 4 # Advance the field
             
-            #logging.info("Template number " + str(template_id) + ", field count " + str(template_field_count) + ", position " + str(pointer))
+            #self.logging.info("Template number " + str(template_id) + ", field count " + str(template_field_count) + ", position " + str(pointer))
 
             hashed_id = hash(str(sensor)+str(template_id))
             cache[hashed_id] = {}
@@ -689,12 +690,12 @@ class netflowv9_parse(object):
                     cache[hashed_id]["Definitions"][element] = element_length
                 
                 else: # Proprietary or undocumented field
-                    logging.warning("Unsupported field " + str(element) + " in template ID " + str(template_id) + " from " + str(sensor))
+                    cache[hashed_id]["Definitions"][element] = 0
+                    #self.logging.warning("Unsupported field " + str(element) + " in template ID " + str(template_id) + " from " + str(sensor))
                 
                 pointer += 4 # Advance the field
 
-            #logging.debug(str(cache[hashed_id]))
-            #logging.info(str(hashed_id) + " hash added to cache, template ID " + str(template_id))
+            #self.logging.debug(str(cache[hashed_id]))
             
         return cache
 

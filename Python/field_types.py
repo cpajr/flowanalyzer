@@ -4,6 +4,7 @@
 # Types of Netflow v9 fields, per https://www.ietf.org/rfc/rfc3954.txt and http://www.iana.org/assignments/ipfix/ipfix.xhtml#ipfix-information-elements
 # Special ASA fields per http://www.cisco.com/c/en/us/td/docs/security/asa/special/netflow/guide/asa_netflow.html#pgfId-1330387
 v9_fields = {
+0:{"Name":"Unsupported",								"Type":"Unsupported",			"Index ID":"Unsupported"},
 1:{"Name":"IN_BYTES",									"Type":"Integer",				"Index ID":"Bytes In"},
 2:{"Name":"IN_PKTS",									"Type":"Integer",				"Index ID":"Packets In"},
 3:{"Name":"FLOWS",										"Type":"Integer",				"Index ID":"Flows"},

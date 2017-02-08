@@ -335,7 +335,7 @@ if __name__ == "__main__":
 								# Not a special MAC field
 								else:
 									pass
-
+							
 							### Something Else ###						
 							else:
 								logging.warning("Unsupported field number " + str(template_key) + ", size " + str(field_size) + " from " + str(sensor_address[0]) + " in sequence " + str(packet["sequence_number"]))
