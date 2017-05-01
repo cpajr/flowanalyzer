@@ -707,8 +707,8 @@ other_ports = {
 3306:{"Name": "MySQL","Category":"Databases"},
 3074:{"Name": "XBOX Live","Category":"Games"},
 3225:{"Name": "FCIP"},
-3389:{"Name": "RDP","Category":"Remote Administrationistration"},
-3390:{"Name": "Alternate RDP","Category":"Remote Administrationistration"},
+3389:{"Name": "RDP","Category":"Remote Administration"},
+3390:{"Name": "Alternate RDP","Category":"Remote Administration"},
 3478:{"Name": "Playstation","Category":"Games"},
 3479:{"Name": "Playstation","Category":"Games"},
 3480:{"Name": "Playstation","Category":"Games"},
@@ -732,10 +732,10 @@ other_ports = {
 5228:{"Name": "Google Services","Category":"Google"},
 5432:{"Name": "PostgreSQL","Category":"Databases"},
 5678:{"Name": "Mikrotik NDP","Category":"Mikrotik"},
-5900:{"Name": "VNC","Category":"Remote Administrationistration"},
-5901:{"Name": "VNC1","Category":"Remote Administrationistration"},
-5902:{"Name": "VNC2","Category":"Remote Administrationistration"},
-5903:{"Name": "VNC3","Category":"Remote Administrationistration"},
+5900:{"Name": "VNC","Category":"Remote Administration"},
+5901:{"Name": "VNC1","Category":"Remote Administration"},
+5902:{"Name": "VNC2","Category":"Remote Administration"},
+5903:{"Name": "VNC3","Category":"Remote Administration"},
 6343:{"Name": "sFlow","Category":"Monitoring"},
 6881:{"Name": "BitTorrent","Category":"P2P"},
 6882:{"Name": "BitTorrent","Category":"P2P"},
@@ -756,5 +756,5 @@ other_ports = {
 8777:{"Name": "Misc. Games","Category":"Games"},
 9293:{"Name": "Playstation Remote Play","Category":"Games"},
 9995:{"Name": "Netflow v9","Category":"Monitoring"},
-10001:{"Name": "Ubiquiti Discovery Protocol","Category":"Remote Administrationistration"}
+10001:{"Name": "Ubiquiti Discovery Protocol","Category":"Remote Administration"}
 }
