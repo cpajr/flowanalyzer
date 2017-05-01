@@ -317,5 +317,5 @@ Fortunately almost everything you need is included in the default installation s
 See the [Elasticsearch Cluster file for steps to configure a cluster](Cluster.md).
 
 # ---
-**Copyright (c) 2016, Manito Networks, LLC**
+**Copyright (c) 2017, Manito Networks, LLC**
 **All rights reserved.**
