@@ -718,6 +718,7 @@ other_ports = {
 3790:{"Name": "Metasploit Pro","Category":"Malicious"},
 4443:{"Name": "Alternate HTTPS","Category":"Web"},
 4444:{"Name": "Metasploit Default Handler","Category":"Malicious"},
+4445:{"Name": "Metasploit Alternate Handler","Category":"Malicious"},
 4500:{"Name": "IPSEC NAT Traversal","Category":"VPN"},
 4569:{"Name": "Asterisk PBX"},
 4739:{"Name": "IPFIX","Category":"Monitoring"},
@@ -756,5 +757,6 @@ other_ports = {
 8777:{"Name": "Misc. Games","Category":"Games"},
 9293:{"Name": "Playstation Remote Play","Category":"Games"},
 9995:{"Name": "Netflow v9","Category":"Monitoring"},
+10000:{"Name": "Webmin","Category":"Remote Administration"}
 10001:{"Name": "Ubiquiti Discovery Protocol","Category":"Remote Administration"}
 }
