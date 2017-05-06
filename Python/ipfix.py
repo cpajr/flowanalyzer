@@ -405,7 +405,7 @@ if __name__ == "__main__":
 				else:
 					byte_position += flow_set_length
 					logging.warning(
-					"Missing template " + 
+					"Waiting on template " + 
 					str(flow_set_id) + 
 					" from " + 
 					str(sensor_address[0]) + 
