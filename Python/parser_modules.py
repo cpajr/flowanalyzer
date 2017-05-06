@@ -3,6 +3,7 @@
 
 ### Packed Integer Parsers ###
 class name_lookups(object):
+    """DNS lookup class"""
     import socket, time
     from site_category import site_categories
 
@@ -79,10 +80,7 @@ class name_lookups(object):
 
         Returns:
             dict: {Content, Domain, Expires, FQDN}
-        """
-
-        #if ip_version == 4: # IPv4 lookups
-                
+        """               
         if ip_addr not in self.dns_cache: # Not already cached
             
             # Record cache
@@ -656,7 +654,7 @@ class netflowv9_parse(object):
         length # type: int
         ):
         """
-        Unpack a Netflow v9 template
+        Unpacks a Netflow v9 template.
         
         Args:
             packed_data (struct): Packed data
@@ -665,8 +663,7 @@ class netflowv9_parse(object):
             length (int): Length of data to unpack
 
         Returns:
-            dict[Hashed ID]: {Sensor: str, Template ID: int, Length: int, Type: int, Definitions: dict}
-        
+            dict: {"Sensor": str, "Template ID": int, "Length": int, "Type": int, "Definitions": ordered dict}
         """
         cache = {}
         while pointer < length:
