@@ -757,6 +757,6 @@ other_ports = {
 8777:{"Name": "Misc. Games","Category":"Games"},
 9293:{"Name": "Playstation Remote Play","Category":"Games"},
 9995:{"Name": "Netflow v9","Category":"Monitoring"},
-10000:{"Name": "Webmin","Category":"Remote Administration"}
+10000:{"Name": "Webmin","Category":"Remote Administration"},
 10001:{"Name": "Ubiquiti Discovery Protocol","Category":"Remote Administration"}
 }
