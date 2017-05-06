@@ -179,7 +179,6 @@ if __name__ == "__main__":
 				
 				parsed_templates = netflow_v9_parser.template_flowset_parse(flow_packet_contents,sensor_address[0],pointer,flow_set_length) # Parse templates
 				template_list.update(parsed_templates) # Add the new template(s) to the working template list					
-
 				logging.debug(str(parsed_templates))
 
 				# Advance to the end of the flow
@@ -210,7 +209,7 @@ if __name__ == "__main__":
 				
 				### Missing template, drop the flow ###
 				if hashed_id not in template_list:
-					logging.warning("Missing template for set " + str(flow_set_id) + " from " + str(sensor_address[0]) + ", sequence " + str(packet["sequence_number"]) + " - DROPPING")
+					logging.warning("Waiting on template for set " + str(flow_set_id) + " from " + str(sensor_address[0]) + ", sequence " + str(packet["sequence_number"]) + " - DROPPING")
 					
 					# Advance to the end of the flow
 					pointer = (flow_set_length + pointer)-4
@@ -258,18 +257,8 @@ if __name__ == "__main__":
 								data_position += field_size
 								continue # Skip this undefined field
 							
-							### IPv4 field ###
-							if v9_fields[template_key]["Type"] == "IPv4":
-								flow_payload = ip_parser.parse_ipv4(flow_packet_contents,data_position,field_size)
-								flow_index["_source"]["IP Protocol Version"] = 4
-								
-							### IPv6 field ###
-							elif v9_fields[template_key]["Type"] == "IPv6":
-								flow_payload = ip_parser.parse_ipv6(flow_packet_contents,data_position,field_size)
-								flow_index["_source"]["IP Protocol Version"] = 6
-								
 							### Integer field ###
-							elif v9_fields[template_key]["Type"] == "Integer":
+							if v9_fields[template_key]["Type"] == "Integer":
 
 								flow_payload = int_un.integer_unpack(flow_packet_contents,data_position,field_size) # Unpack the integer
 									
@@ -290,7 +279,17 @@ if __name__ == "__main__":
 								# Not a specially parsed field, just ignore
 								else:
 									pass
-									
+							
+							### IPv4 field ###
+							elif v9_fields[template_key]["Type"] == "IPv4":
+								flow_payload = ip_parser.parse_ipv4(flow_packet_contents,data_position,field_size)
+								flow_index["_source"]["IP Protocol Version"] = 4
+								
+							### IPv6 field ###
+							elif v9_fields[template_key]["Type"] == "IPv6":
+								flow_payload = ip_parser.parse_ipv6(flow_packet_contents,data_position,field_size)
+								flow_index["_source"]["IP Protocol Version"] = 6
+																
 							### MAC Address field ###
 							elif v9_fields[template_key]["Type"] == "MAC":
 								
