@@ -270,18 +270,8 @@ if __name__ == "__main__":
 						# Iterate through template elements
 						for template_key, field_size in template_list[hashed_id]["Definitions"].iteritems():
 							
-							# IPv4 Address
-							if ipfix_fields[template_key]["Type"] == "IPv4":
-								flow_payload = ip_parser.parse_ipv4(flow_packet_contents,data_position,field_size)
-								flow_index["_source"]["IP Protocol Version"] = 4
-								
-							# IPv6 Address
-							elif ipfix_fields[template_key]["Type"] == "IPv6":
-								flow_payload = ip_parser.parse_ipv6(flow_packet_contents,data_position,field_size)
-								flow_index["_source"]["IP Protocol Version"] = 6	
-							
 							# Integer type field, parse further
-							elif ipfix_fields[template_key]["Type"] == "Integer":
+							if ipfix_fields[template_key]["Type"] == "Integer":
 								
 								# Unpack the integer
 								flow_payload = int_un.integer_unpack(flow_packet_contents,data_position,field_size)
@@ -310,6 +300,16 @@ if __name__ == "__main__":
 								# No "Options" specified for this field type
 								else:
 									pass
+
+							# IPv4 Address
+							elif ipfix_fields[template_key]["Type"] == "IPv4":
+								flow_payload = ip_parser.parse_ipv4(flow_packet_contents,data_position,field_size)
+								flow_index["_source"]["IP Protocol Version"] = 4
+								
+							# IPv6 Address
+							elif ipfix_fields[template_key]["Type"] == "IPv6":
+								flow_payload = ip_parser.parse_ipv6(flow_packet_contents,data_position,field_size)
+								flow_index["_source"]["IP Protocol Version"] = 6	
 									
 							# MAC Address
 							elif ipfix_fields[template_key]["Type"] == "MAC":
