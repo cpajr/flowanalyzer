@@ -143,73 +143,68 @@ if __name__ == "__main__":
 			logging.info("Parsing flow " + str(flow_num+1))
 			base = packet_header_size + (flow_num * flow_record_size) # Calculate flow starting point
 			
-			(ip_source,
-			ip_destination,
-			next_hop,
-			input_interface,
-			output_interface,
-			total_packets,
-			total_bytes,
-			sysuptime_start,
-			sysuptime_stop,
-			src_port,
-			dest_port,
-			pad,
-			tcp_flags,
-			protocol_num,
-			type_of_service,
-			source_as,
-			destination_as,
-			source_mask,
-			destination_mask) = struct.unpack('!4s4s4shhIIIIHHcBBBhhBB',flow_packet_contents[base+0:base+46])
-			
-			# Protocol Name
-			try:
-				flow_protocol = protocol_type[protocol_num]["Name"]
-			except Exception as protocol_error:
-				flow_protocol = "Other" # Should never see this unless undefined protocol in use
-				logging.warning("Unknown protocol number - " + str(protocol_num) + ". Please report to the author for inclusion.")
-				logging.warning(str(protocol_error))
-
+			# Index for upload
 			flow_index = {
 			"_index": str("flow-" + now.strftime("%Y-%m-%d")),
 			"_type": "Flow",
 			"_source": {
-			"Flow Type": "Netflow v5",
-			"IP Protocol Version": 4,
-			"Sensor": sensor_address[0],
-			"Time": now.strftime("%Y-%m-%dT%H:%M:%S") + ".%03d" % (now.microsecond / 1000) + "Z",
-			"IPv4 Source": inet_ntoa(ip_source),
-			"Bytes In": total_bytes,
-			"TCP Flags": tcp_flags,
-			"Packets In": total_packets,
-			"Source Port": src_port,
-			"IPv4 Destination": inet_ntoa(ip_destination),
-			"IPv4 Next Hop": inet_ntoa(next_hop),
-			"Input Interface": input_interface,
-			"Output Interface": output_interface,
-			"Destination Port": dest_port,
-			"Protocol": flow_protocol,
-			"Protocol Number": protocol_num,
-			"Type of Service": type_of_service,
-			"Source AS": source_as,
-			"Destination AS": destination_as,
-			"Source Mask": source_mask,
-			"Destination Mask": destination_mask,
-			"Engine Type": packet_contents["engine_type"],
-			"Engine ID": packet_contents["engine_id"]
-			}
+				"Flow Type": "Netflow v5",
+				"IP Protocol Version": 4,
+				"Sensor": sensor_address[0],
+				"Time": now.strftime("%Y-%m-%dT%H:%M:%S") + ".%03d" % (now.microsecond / 1000) + "Z",
+				"Engine Type": packet_contents["engine_type"],
+				"Engine ID": packet_contents["engine_id"]
+				}
 			}
 
-			# Protocol Category for protocols not TCP/UDP
-			if "Category" in protocol_type[protocol_num]:
-				flow_index["_source"]['Traffic Category'] = protocol_type[protocol_num]["Category"]
+			# Unpack flow data, populate flow_index["_source"]
+			(ip_source,
+			ip_destination,
+			next_hop,
+			flow_index["_source"]["Input Interface"],
+			flow_index["_source"]["Output Interface"],
+			flow_index["_source"]["Packets In"],
+			flow_index["_source"]["Bytes In"],
+			flow_index["_source"]["System Uptime Start"],
+			flow_index["_source"]["System Uptime Stop"],
+			flow_index["_source"]["Source Port"],
+			flow_index["_source"]["Destination Port"],
+			pad,
+			flow_index["_source"]["TCP Flags"],
+			flow_index["_source"]["Protocol Number"],
+			flow_index["_source"]["Type of Service"],
+			flow_index["_source"]["Source AS"],
+			flow_index["_source"]["Destination AS"],
+			flow_index["_source"]["Source Mask"],
+			flow_index["_source"]["Destination Mask"]) = struct.unpack('!4s4s4shhIIIIHHcBBBhhBB',flow_packet_contents[base+0:base+46])
+
+			# Final unpack, IP addresses via inet_ntoa()
+			flow_index["_source"]["IPv4 Source"] = inet_ntoa(ip_source)
+			flow_index["_source"]["IPv4 Destination"] = inet_ntoa(ip_destination)
+			flow_index["_source"]["IPv4 Next Hop"] = inet_ntoa(next_hop)
+			
+			# Protocols
+			try:
+				# Protocol name
+				flow_index["_source"]["Protocol"] = protocol_type[flow_index["_source"]["Protocol Number"]]["Name"]
+			
+			except Exception as protocol_error:
+				flow_protocol = "Other" # Should never see this unless undefined protocol in use
+				logging.warning("Unknown protocol number - " + str(flow_index["_source"]["Protocol Number"]) + ". Please report to the author for inclusion.")
+				logging.warning(str(protocol_error))
 			
 			# If the protocol is TCP or UDP try to apply traffic labels
-			if flow_index["_source"]["Protocol Number"] in [6,17]:		
-				traffic_and_category = tcp_udp.port_traffic_classifier(src_port,dest_port)
+			if flow_index["_source"]["Protocol Number"] in (6, 17, 33, 132):		
+				traffic_and_category = tcp_udp.port_traffic_classifier(flow_index["_source"]["Source Port"],flow_index["_source"]["Destination Port"])
 				flow_index["_source"]["Traffic"] = traffic_and_category["Traffic"]
 				flow_index["_source"]["Traffic Category"] = traffic_and_category["Traffic Category"]
+
+			else:
+				# Protocol category
+				if "Category" in protocol_type[flow_index["_source"]["Protocol Number"]]:
+					flow_index["_source"]['Traffic Category'] = protocol_type[flow_index["_source"]["Protocol Number"]]["Category"]
+				else:
+					flow_index["_source"]['Traffic Category'] = "Uncategorized"
 			
 			# Perform DNS lookups if enabled
 			if dns is True:	
