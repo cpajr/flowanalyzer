@@ -194,7 +194,7 @@ if __name__ == "__main__":
 				logging.warning(str(protocol_error))
 			
 			# If the protocol is TCP or UDP try to apply traffic labels
-			if flow_index["_source"]["Protocol Number"] in (6, 17, 33, 132):		
+			if flow_index["_source"]["Protocol Number"] in ([6, 17, 33, 132]):		
 				traffic_and_category = tcp_udp.port_traffic_classifier(flow_index["_source"]["Source Port"],flow_index["_source"]["Destination Port"])
 				flow_index["_source"]["Traffic"] = traffic_and_category["Traffic"]
 				flow_index["_source"]["Traffic Category"] = traffic_and_category["Traffic Category"]
