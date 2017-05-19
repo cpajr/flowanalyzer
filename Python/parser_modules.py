@@ -777,57 +777,43 @@ class ports_and_protocols(object):
         ):
         """
         Reconcile port numbers to services eg TCP/80 to HTTP, and services to categories eg HTTP to Web
-        
         Args:
             src_port (int): Port number eg "443"
             dst_port (int): Port number eg "443"
-
         Returns:
             dict: ["Traffic":"HTTP","Traffic Category":"Web"], default value is "Other" for each.
-        
         """
-        traffic = {}
+        for evaluated_port in [src_port,dst_port]:
+            
+            # Evaluate source and destination ports
+            if evaluated_port in self.registered_ports:
+                traffic = {}
+                traffic["Traffic"] = self.registered_ports[evaluated_port]["Name"]
 
-        # SRC Port
-        if src_port in self.registered_ports:
-            traffic["Traffic"] = self.registered_ports[src_port]["Name"]
+                if "Category" in self.registered_ports[evaluated_port]:
+                    traffic["Traffic Category"] = self.registered_ports[evaluated_port]["Category"]
+                else:
+                    traffic["Traffic Category"] = "Other"
+                break # Done parsing ports
 
-            if "Category" in self.registered_ports[src_port]:
-                traffic["Traffic Category"] = self.registered_ports[src_port]["Category"]
+            elif evaluated_port in self.other_ports:
+                traffic = {}
+                traffic["Traffic"] = self.other_ports[evaluated_port]["Name"]
 
-        elif src_port in self.other_ports:
-            traffic["Traffic"] = self.other_ports[src_port]["Name"]
+                if "Category" in self.other_ports[evaluated_port]:
+                    traffic["Traffic Category"] = self.other_ports[evaluated_port]["Category"]
+                else:
+                    traffic["Traffic Category"] = "Other"
+                break # Done parsing ports
 
-            if "Category" in self.other_ports[src_port]:
-                traffic["Traffic Category"] = self.other_ports[src_port]["Category"]
+            else:
+                pass
 
-        else:
-            pass
-        
-        # DST Port
-        if dst_port in self.registered_ports:
-            traffic["Traffic"] = self.registered_ports[dst_port]["Name"]
-
-            if "Category" in self.registered_ports[dst_port]:
-                traffic["Traffic Category"] = self.registered_ports[dst_port]["Category"]
-
-        elif dst_port in self.other_ports:
-            traffic["Traffic"] = self.other_ports[dst_port]["Name"]
-
-            if "Category" in self.other_ports[dst_port]:
-                traffic["Traffic Category"] = self.other_ports[dst_port]["Category"]
-        
-        else:
-            pass
-        
         try: # Set as "Other" if not already set
-            traffic["Traffic"]
+            traffic
         except (NameError,KeyError):
+            traffic = {}
             traffic["Traffic"] = "Other"
+            traffic["Traffic Category"] = "Other"            
 
-        try: # Set as "Other" if not already set
-            traffic["Traffic Category"]
-        except (NameError,KeyError):
-            traffic["Traffic Category"] = "Other"
-        
         return traffic
