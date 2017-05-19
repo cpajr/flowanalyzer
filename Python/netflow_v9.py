@@ -23,7 +23,7 @@ try:
 						
 			if opt in ('-l','--log'): # Log level
 				arg = arg.upper() # Uppercase for matching and logging.basicConfig() format
-				if arg in ["CRITICAL","ERROR","WARNING","INFO","DEBUG"]:
+				if arg in (["CRITICAL","ERROR","WARNING","INFO","DEBUG"]):
 					log_level = arg # Use what was passed in arguments
 
 			elif opt in ('-h','--help'): # Help file
@@ -174,35 +174,8 @@ if __name__ == "__main__":
 			
 			logging.info("Finshed, position " + str(pointer))
 			
-			if flow_set_id == 0: # Template flowset
-				logging.info("Unpacking template flowset " + str(flow_set_id) + ", position " + str(pointer))
-				
-				parsed_templates = netflow_v9_parser.template_flowset_parse(flow_packet_contents,sensor_address[0],pointer,flow_set_length) # Parse templates
-				template_list.update(parsed_templates) # Add the new template(s) to the working template list					
-				logging.debug(str(parsed_templates))
-
-				# Advance to the end of the flow
-				pointer = (flow_set_length + pointer)-4
-				logging.info("Finished, position " + str(pointer))
-
-				flow_counter += 1
-				record_num += 1
-									
-			elif flow_set_id == 1: # Options template set
-				logging.warning("Unpacking Options template set, position " + str(pointer))
-				
-				option_templates = netflow_v9_parser.option_template_parse(flow_packet_contents,sensor_address[0],pointer)
-				template_list.update(option_templates) # Add the new Option template(s) to the working template list
-
-				logging.debug(str(template_list))
-				pointer = (flow_set_length + pointer)-4
-				logging.info("Finished, position " + str(pointer))
-
-				flow_counter += 1
-				record_num += 1
-
 			# Flow data set
-			elif flow_set_id > 255:
+			if flow_set_id > 255:
 				logging.info("Unpacking data set " + str(flow_set_id) + ", position " + str(pointer))
 				
 				hashed_id = hash(str(sensor_address[0])+str(flow_set_id))
@@ -231,6 +204,7 @@ if __name__ == "__main__":
 						"_type": "Flow",
 						"_source": {
 						"Sensor": sensor_address[0],
+						"Flow Type": "Netflow v9",
 						"Sequence": packet["sequence_number"],
 						"Source ID": packet["source_id"],
 						"Time": now.strftime("%Y-%m-%dT%H:%M:%S") + ".%03d" % (now.microsecond / 1000) + "Z",
@@ -239,8 +213,6 @@ if __name__ == "__main__":
 						
 						flow_counter += 1
 						record_num += 1
-
-						flow_index["_source"]["Flow Type"] = "Netflow v9" # Note the type
 
 						logging.info("Data flow number " + str(flow_counter) + ", set ID " + str(flow_set_id) + " from " + str(sensor_address[0])) 
 						
@@ -260,25 +232,31 @@ if __name__ == "__main__":
 							### Integer field ###
 							if v9_fields[template_key]["Type"] == "Integer":
 
-								flow_payload = int_un.integer_unpack(flow_packet_contents,data_position,field_size) # Unpack the integer
-									
-								# IANA protocol number in case the customer wants to sort by protocol number
-								if template_key == 4:							
-									flow_index["_source"]['Protocol Number'] = flow_payload	
-										
-								# Do the special calculations for ICMP Code and Type (% operator)
-								elif template_key in [32,139]:
-									num_icmp = icmp_parser.icmp_num_type_code(flow_payload)
-									flow_index["_source"]['ICMP Type'] = num_icmp[0]
-									flow_index["_source"]['ICMP Code'] = num_icmp[1]
+								# Unpack the integer
+								flow_payload = int_un.integer_unpack(flow_packet_contents,data_position,field_size) 
 
-									human_icmp = icmp_parser.icmp_human_type_code(flow_payload)
-									flow_index["_source"]['ICMP Parsed Type'] = human_icmp[0]
-									flow_index["_source"]['ICMP Parsed Code'] = human_icmp[1]
-
-								# Not a specially parsed field, just ignore
-								else:
+								# Special integer-type fields	
+								if template_key not in ([4, 32, 139]):
 									pass
+
+								else:
+
+									# IANA protocol number in case the customer wants to sort by protocol number
+									if template_key == 4:							
+										flow_index["_source"]['Protocol Number'] = flow_payload	
+											
+									# Do the special calculations for ICMP Code and Type (% operator)
+									elif template_key in ([32,139]):
+										num_icmp = icmp_parser.icmp_num_type_code(flow_payload)
+										flow_index["_source"]['ICMP Type'] = num_icmp[0]
+										flow_index["_source"]['ICMP Code'] = num_icmp[1]
+
+										human_icmp = icmp_parser.icmp_human_type_code(flow_payload)
+										flow_index["_source"]['ICMP Parsed Type'] = human_icmp[0]
+										flow_index["_source"]['ICMP Parsed Code'] = human_icmp[1]
+
+									else:
+										pass
 							
 							### IPv4 field ###
 							elif v9_fields[template_key]["Type"] == "IPv4":
@@ -360,7 +338,7 @@ if __name__ == "__main__":
 						### Traffic and Traffic Category tagging ###
 						#
 						# Transport protocols eg TCP, UDP, etc
-						if int(flow_index["_source"]['Protocol Number']) in (6, 17, 33, 132):
+						if int(flow_index["_source"]['Protocol Number']) in ([6, 17, 33, 132]):
 							traffic_tags = ports_protocols_parser.port_traffic_classifier(flow_index["_source"]["Source Port"],flow_index["_source"]["Destination Port"])
 							flow_index["_source"]["Traffic"] = traffic_tags["Traffic"]
 							flow_index["_source"]["Traffic Category"] = traffic_tags["Traffic Category"]
@@ -429,6 +407,33 @@ if __name__ == "__main__":
 				# Advance to the end of the flow
 				pointer = (flow_set_length + pointer)-4
 				logging.info("Finished set " + str(flow_set_id) + ", position " + str(pointer))
+			
+			elif flow_set_id == 0: # Template flowset
+				logging.info("Unpacking template flowset " + str(flow_set_id) + ", position " + str(pointer))
+				
+				parsed_templates = netflow_v9_parser.template_flowset_parse(flow_packet_contents,sensor_address[0],pointer,flow_set_length) # Parse templates
+				template_list.update(parsed_templates) # Add the new template(s) to the working template list					
+				logging.debug(str(parsed_templates))
+
+				# Advance to the end of the flow
+				pointer = (flow_set_length + pointer)-4
+				logging.info("Finished, position " + str(pointer))
+
+				flow_counter += 1
+				record_num += 1
+									
+			elif flow_set_id == 1: # Options template set
+				logging.warning("Unpacking Options template set, position " + str(pointer))
+				
+				option_templates = netflow_v9_parser.option_template_parse(flow_packet_contents,sensor_address[0],pointer)
+				template_list.update(option_templates) # Add the new Option template(s) to the working template list
+
+				logging.debug(str(template_list))
+				pointer = (flow_set_length + pointer)-4
+				logging.info("Finished, position " + str(pointer))
+
+				flow_counter += 1
+				record_num += 1
 			
 			# Rcvd a flow set ID we haven't accounted for
 			else:
