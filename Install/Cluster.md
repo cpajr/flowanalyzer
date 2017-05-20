@@ -114,3 +114,7 @@ OR reboot the server:
 ```
 sudo reboot
 ```
+
+# ---
+**Copyright (c) 2017, Manito Networks, LLC**
+**All rights reserved.**
