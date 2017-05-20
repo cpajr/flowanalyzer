@@ -1,4 +1,4 @@
-# Copyright 2016, Manito Networks, LLC. All rights reserved.
+# Copyright (c) 2017, Manito Networks, LLC. All rights reserved.
 # Install script for ELK 2.x
 
 # Get installation path
