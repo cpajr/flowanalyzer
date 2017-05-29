@@ -16,7 +16,7 @@ Questions we get frequently about protocols and overall protocol behavior:
 We support Netflow v5, Netflow v9, IPFIX (aka Netflow v10), and sFlow. See the [Ports and Protocols section](README.md#ports-and-protocols) of the README file.
 
 ## Missing Templates
-### I see a message "_Missing template .... - DROPPING_" - what gives? 
+### I see a message "_Waiting on template .... - DROPPING_" - what gives? 
 Netflow v9 and IPFIX are template-based flow protocols. Your router, switch, or other device has to send a template to the collector that says what fields are in each flow record and what the sizes of those fields are. That template is then cached and used to decode the flow records. Some devices only send templates every _X_ amount of flows, or every _Y_ minutes. Some vendors allow you to configure those values, some don't. Once we get a matching template every record that comes after it will get decoded, parsed, and stored for you to analyze.
 
 ## IPFIX Sequence Numbers
