@@ -19,6 +19,7 @@ Every network is different so it's difficult to give a quick suggestion for the 
 ## Operating System
 The following versions of Ubuntu Server have been tested and verified to work with the [installation](./Install/README.md) script:
 
+- 17.04
 - 16.04 LTS
 - 16.04.1 LTS
 - 16.10
