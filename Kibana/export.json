@@ -1,0 +1,435 @@
+[
+  {
+    "_id": "2a21fa20-36c0-11e7-860c-93566c10782a",
+    "_type": "dashboard",
+    "_source": {
+      "title": "Traffic At A Glance",
+      "hits": 0,
+      "description": "",
+      "panelsJSON": "[{\"col\":1,\"id\":\"9977d3f0-36bf-11e7-860c-93566c10782a\",\"panelIndex\":1,\"row\":1,\"size_x\":12,\"size_y\":3,\"type\":\"visualization\"},{\"col\":5,\"id\":\"0a47f1b0-36bf-11e7-860c-93566c10782a\",\"panelIndex\":2,\"row\":4,\"size_x\":4,\"size_y\":3,\"type\":\"visualization\"},{\"col\":1,\"id\":\"bcf9b610-36bd-11e7-860c-93566c10782a\",\"panelIndex\":3,\"row\":4,\"size_x\":4,\"size_y\":3,\"type\":\"visualization\"},{\"size_x\":4,\"size_y\":3,\"panelIndex\":4,\"type\":\"visualization\",\"id\":\"f14326c0-370a-11e7-9dc9-852d5c236194\",\"col\":9,\"row\":4}]",
+      "optionsJSON": "{\"darkTheme\":false}",
+      "uiStateJSON": "{\"P-4\":{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}}}",
+      "version": 1,
+      "timeRestore": false,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"filter\":[{\"query\":{\"query_string\":{\"analyze_wildcard\":true,\"query\":\"*\"}}}],\"highlightAll\":true,\"version\":true}"
+      }
+    }
+  },
+  {
+    "_id": "936432c0-36b4-11e7-b10b-0591175acb4b",
+    "_type": "search",
+    "_source": {
+      "title": "DNS Traffic",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "_source"
+      ],
+      "sort": [
+        "Time",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"flow*\",\"highlightAll\":true,\"version\":true,\"filter\":[],\"query\":{\"query_string\":{\"query\":\"Protocol:[TCP, UDP] AND (Source\\\\ Port:53 OR Destination\\\\ Port:53)\",\"analyze_wildcard\":true}}}"
+      }
+    }
+  },
+  {
+    "_id": "0de823e0-36b4-11e7-b10b-0591175acb4b",
+    "_type": "search",
+    "_source": {
+      "title": "Web Traffic",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "_source"
+      ],
+      "sort": [
+        "Time",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"flow*\",\"highlightAll\":true,\"version\":true,\"filter\":[],\"query\":{\"query_string\":{\"query\":\"Protocol:TCP AND (Source\\\\ Port:[80, 443] OR Destination\\\\ Port:[80, 443])\",\"analyze_wildcard\":true}}}"
+      }
+    }
+  },
+  {
+    "_id": "4139ffb0-36b5-11e7-b10b-0591175acb4b",
+    "_type": "search",
+    "_source": {
+      "title": "OSPF Traffic",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "_source"
+      ],
+      "sort": [
+        "Time",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"flow*\",\"highlightAll\":true,\"version\":true,\"filter\":[],\"query\":{\"query_string\":{\"query\":\"Protocol\\\\ Number:89\",\"analyze_wildcard\":true}}}"
+      }
+    }
+  },
+  {
+    "_id": "0dc404a0-36b5-11e7-b10b-0591175acb4b",
+    "_type": "search",
+    "_source": {
+      "title": "UDP Traffic",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "_source"
+      ],
+      "sort": [
+        "Time",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"flow*\",\"highlightAll\":true,\"version\":true,\"filter\":[],\"query\":{\"query_string\":{\"query\":\"Protocol\\\\ Number:17\",\"analyze_wildcard\":true}}}"
+      }
+    }
+  },
+  {
+    "_id": "03094890-36b5-11e7-b10b-0591175acb4b",
+    "_type": "search",
+    "_source": {
+      "title": "TCP Traffic",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "_source"
+      ],
+      "sort": [
+        "Time",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"flow*\",\"highlightAll\":true,\"version\":true,\"filter\":[],\"query\":{\"query_string\":{\"query\":\"Protocol\\\\ Number:6\",\"analyze_wildcard\":true}}}"
+      }
+    }
+  },
+  {
+    "_id": "79377eb0-36b5-11e7-b10b-0591175acb4b",
+    "_type": "search",
+    "_source": {
+      "title": "ICMP Traffic",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "_source"
+      ],
+      "sort": [
+        "Time",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"flow*\",\"highlightAll\":true,\"version\":true,\"filter\":[],\"query\":{\"query_string\":{\"query\":\"Protocol\\\\ Number:1\",\"analyze_wildcard\":true}}}"
+      }
+    }
+  },
+  {
+    "_id": "52f611f0-36b8-11e7-b10b-0591175acb4b",
+    "_type": "search",
+    "_source": {
+      "title": "NetBIOS Name Service Traffic",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "_source"
+      ],
+      "sort": [
+        "Time",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"flow*\",\"highlightAll\":true,\"version\":true,\"filter\":[],\"query\":{\"query_string\":{\"query\":\"Protocol:UDP AND Destination\\\\ Port:137\",\"analyze_wildcard\":true}}}"
+      }
+    }
+  },
+  {
+    "_id": "7336abc0-36b6-11e7-b10b-0591175acb4b",
+    "_type": "search",
+    "_source": {
+      "title": "PPTP Traffic",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "_source"
+      ],
+      "sort": [
+        "Time",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"flow*\",\"highlightAll\":true,\"version\":true,\"filter\":[],\"query\":{\"query_string\":{\"query\":\"Protocol:TCP AND (Source\\\\ Port:1723 OR Destination\\\\ Port:1723)\",\"analyze_wildcard\":true}}}"
+      }
+    }
+  },
+  {
+    "_id": "ece83c40-36b6-11e7-b10b-0591175acb4b",
+    "_type": "search",
+    "_source": {
+      "title": "Telnet Traffic",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "_source"
+      ],
+      "sort": [
+        "Time",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"flow*\",\"highlightAll\":true,\"version\":true,\"filter\":[],\"query\":{\"query_string\":{\"query\":\"Protocol:TCP AND (Source\\\\ Port:23 OR Destination\\\\ Port:23)\",\"analyze_wildcard\":true}}}"
+      }
+    }
+  },
+  {
+    "_id": "4359b5f0-36b6-11e7-b10b-0591175acb4b",
+    "_type": "search",
+    "_source": {
+      "title": "NTP Traffic",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "_source"
+      ],
+      "sort": [
+        "Time",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"flow*\",\"highlightAll\":true,\"version\":true,\"filter\":[],\"query\":{\"query_string\":{\"query\":\"Protocol:UDP AND (Source\\\\ Port:123 OR Destination\\\\ Port:123)\",\"analyze_wildcard\":true}}}"
+      }
+    }
+  },
+  {
+    "_id": "5573a700-36b6-11e7-b10b-0591175acb4b",
+    "_type": "search",
+    "_source": {
+      "title": "SSH Traffic",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "_source"
+      ],
+      "sort": [
+        "Time",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"flow*\",\"highlightAll\":true,\"version\":true,\"filter\":[],\"query\":{\"query_string\":{\"query\":\"Protocol:TCP AND (Source\\\\ Port:22 OR Destination\\\\ Port:22)\",\"analyze_wildcard\":true}}}"
+      }
+    }
+  },
+  {
+    "_id": "fed69400-36b7-11e7-b10b-0591175acb4b",
+    "_type": "search",
+    "_source": {
+      "title": "LLMNR Traffic",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "_source"
+      ],
+      "sort": [
+        "Time",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"flow*\",\"highlightAll\":true,\"version\":true,\"filter\":[],\"query\":{\"query_string\":{\"query\":\"Protocol:UDP AND Destination\\\\ Port:5355\",\"analyze_wildcard\":true}}}"
+      }
+    }
+  },
+  {
+    "_id": "8372e6b0-36b7-11e7-b10b-0591175acb4b",
+    "_type": "search",
+    "_source": {
+      "title": "SSDP Traffic",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "_source"
+      ],
+      "sort": [
+        "Time",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"flow*\",\"highlightAll\":true,\"version\":true,\"filter\":[],\"query\":{\"query_string\":{\"query\":\"Protocol:UDP AND Destination\\\\ Port:1900\",\"analyze_wildcard\":true}}}"
+      }
+    }
+  },
+  {
+    "_id": "fca8f080-36b5-11e7-b10b-0591175acb4b",
+    "_type": "search",
+    "_source": {
+      "title": "L2TP Traffic",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "_source"
+      ],
+      "sort": [
+        "Time",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"flow*\",\"highlightAll\":true,\"version\":true,\"filter\":[],\"query\":{\"query_string\":{\"query\":\"Protocol\\\\ Number:115\",\"analyze_wildcard\":true}}}"
+      }
+    }
+  },
+  {
+    "_id": "d6a09c80-36b5-11e7-b10b-0591175acb4b",
+    "_type": "search",
+    "_source": {
+      "title": "GRE Traffic",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "_source"
+      ],
+      "sort": [
+        "Time",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"flow*\",\"highlightAll\":true,\"version\":true,\"filter\":[],\"query\":{\"query_string\":{\"query\":\"Protocol\\\\ Number:47\",\"analyze_wildcard\":true}}}"
+      }
+    }
+  },
+  {
+    "_id": "a02e9b50-36bc-11e7-b10b-0591175acb4b",
+    "_type": "search",
+    "_source": {
+      "title": "Winbox Traffic",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "_source"
+      ],
+      "sort": [
+        "Time",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"flow*\",\"highlightAll\":true,\"version\":true,\"filter\":[],\"query\":{\"query_string\":{\"query\":\"Protocol:TCP AND (Source\\\\ Port:8291OR Destination\\\\ Port:8291)\",\"analyze_wildcard\":true}}}"
+      }
+    }
+  },
+  {
+    "_id": "ea9846e0-36b8-11e7-b10b-0591175acb4b",
+    "_type": "search",
+    "_source": {
+      "title": "MikroTik Discovery Traffic",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "_source"
+      ],
+      "sort": [
+        "Time",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"flow*\",\"highlightAll\":true,\"version\":true,\"filter\":[],\"query\":{\"query_string\":{\"query\":\"Protocol:UDP AND Destination\\\\ Port:5678\",\"analyze_wildcard\":true}}}"
+      }
+    }
+  },
+  {
+    "_id": "9a14b460-36b8-11e7-b10b-0591175acb4b",
+    "_type": "search",
+    "_source": {
+      "title": "SNMP Traffic",
+      "description": "",
+      "hits": 0,
+      "columns": [
+        "_source"
+      ],
+      "sort": [
+        "Time",
+        "desc"
+      ],
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"flow*\",\"highlightAll\":true,\"version\":true,\"filter\":[],\"query\":{\"query_string\":{\"query\":\"Protocol:UDP AND Destination\\\\ Port:161\",\"analyze_wildcard\":true}}}"
+      }
+    }
+  },
+  {
+    "_id": "9977d3f0-36bf-11e7-860c-93566c10782a",
+    "_type": "visualization",
+    "_source": {
+      "title": "Traffic Over Time",
+      "visState": "{\"title\":\"Traffic Over Time\",\"type\":\"line\",\"params\":{\"grid\":{\"categoryLines\":false,\"style\":{\"color\":\"#eee\"}},\"categoryAxes\":[{\"id\":\"CategoryAxis-1\",\"type\":\"category\",\"position\":\"bottom\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\"},\"labels\":{\"show\":true,\"truncate\":100},\"title\":{\"text\":\"Time per 3 hours\"}}],\"valueAxes\":[{\"id\":\"ValueAxis-1\",\"name\":\"LeftAxis-1\",\"type\":\"value\",\"position\":\"left\",\"show\":true,\"style\":{},\"scale\":{\"type\":\"linear\",\"mode\":\"normal\"},\"labels\":{\"show\":true,\"rotate\":0,\"filter\":false,\"truncate\":100},\"title\":{\"text\":\"Traffic In\"}}],\"seriesParams\":[{\"show\":true,\"mode\":\"normal\",\"type\":\"line\",\"drawLinesBetweenPoints\":true,\"showCircles\":true,\"interpolate\":\"linear\",\"lineWidth\":2,\"data\":{\"id\":\"1\",\"label\":\"Traffic In\"},\"valueAxis\":\"ValueAxis-1\"}],\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"right\",\"showCircles\":true,\"interpolate\":\"linear\",\"scale\":\"linear\",\"drawLinesBetweenPoints\":true,\"radiusRatio\":9,\"times\":[],\"addTimeMarker\":false,\"defaultYExtents\":false,\"setYExtents\":false},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"Bytes In\",\"customLabel\":\"Traffic In\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"date_histogram\",\"schema\":\"segment\",\"params\":{\"field\":\"Time\",\"interval\":\"auto\",\"customInterval\":\"2h\",\"min_doc_count\":1,\"extended_bounds\":{}}}],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"flow*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "f14326c0-370a-11e7-9dc9-852d5c236194",
+    "_type": "visualization",
+    "_source": {
+      "title": "Traffic In by Sensor Metrics",
+      "visState": "{\"title\":\"Traffic In by Sensor Metrics\",\"type\":\"table\",\"params\":{\"perPage\":10,\"showPartialRows\":false,\"showMeticsAtAllLevels\":false,\"sort\":{\"columnIndex\":null,\"direction\":null},\"showTotal\":false,\"totalFunc\":\"sum\"},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"Bytes In\",\"customLabel\":\"Traffic In\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"bucket\",\"params\":{\"field\":\"Sensor\",\"size\":5,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"Sensor\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{\"vis\":{\"params\":{\"sort\":{\"columnIndex\":null,\"direction\":null}}}}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"flow*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "bcf9b610-36bd-11e7-860c-93566c10782a",
+    "_type": "visualization",
+    "_source": {
+      "title": "Total Traffic by Protocol",
+      "visState": "{\"title\":\"Total Traffic by Protocol\",\"type\":\"pie\",\"params\":{\"addTooltip\":true,\"addLegend\":true,\"legendPosition\":\"right\",\"isDonut\":false},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"Bytes In\",\"customLabel\":\"Traffic\"}},{\"id\":\"2\",\"enabled\":true,\"type\":\"terms\",\"schema\":\"segment\",\"params\":{\"field\":\"Protocol\",\"size\":10,\"order\":\"desc\",\"orderBy\":\"1\",\"customLabel\":\"Protocol\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"flow*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  },
+  {
+    "_id": "0a47f1b0-36bf-11e7-860c-93566c10782a",
+    "_type": "visualization",
+    "_source": {
+      "title": "Traffic In Metric",
+      "visState": "{\"title\":\"Traffic In Metric\",\"type\":\"metric\",\"params\":{\"handleNoResults\":true,\"fontSize\":60},\"aggs\":[{\"id\":\"1\",\"enabled\":true,\"type\":\"sum\",\"schema\":\"metric\",\"params\":{\"field\":\"Bytes In\",\"customLabel\":\"Bytes In\"}}],\"listeners\":{}}",
+      "uiStateJSON": "{}",
+      "description": "",
+      "version": 1,
+      "kibanaSavedObjectMeta": {
+        "searchSourceJSON": "{\"index\":\"flow*\",\"query\":{\"query_string\":{\"query\":\"*\",\"analyze_wildcard\":true}},\"filter\":[]}"
+      }
+    }
+  }
+]
