@@ -1,5 +1,7 @@
 # Searching in Kibana
-The syntax used for searching in Kibana is based on the [Apache Lucene syntax](http://lucene.apache.org/core/3_5_0/queryparsersyntax.html). There are a few "gotchas" to bear in mind, but once you get the syntax down it's not hard. Spaces in field names must be escaped by a "\" symbol. Binary operators like "and", "or", and "not" must be all UPPERCASE. You can search for individual fields and terms, or combine them. Multiple statements can also be combined by putting them in parenthesis. 
+The syntax used for searching in Kibana is based on the [Apache Lucene syntax](http://lucene.apache.org/core/3_5_0/queryparsersyntax.html). There are a few "gotchas" to bear in mind, but once you get the syntax down it's not hard. Spaces in field names MUST be escaped by a "\" symbol. Binary operators like "AND", "OR", and "NOT" MUST be all UPPERCASE. You can search for individual fields and terms, or combine them. Multiple statements can also be combined by putting them in parenthesis. 
+
+Check out the [official Kibana documentation](https://www.elastic.co/guide/en/beats/packetbeat/current/kibana-queries-filters.html) for more information, and test out the examples below.
 
 Search for a keyword ("SSH") in _any_ field:
 ```
@@ -13,7 +15,7 @@ Protocol: TCP
 
 Search for the Transport-type protocol numbers in the "Protocol" field:
 ```
-Protocol: (6 17 33 132)
+Protocol:[6, 17, 33, 132]
 ```
 
 Search for 3389 as a Source or Destination port number:
@@ -32,24 +34,28 @@ Search by either protocol name ("TCP", "UDP", "OSPF", etc) or [IANA protocol num
 ## TCP
 ```
 Protocol: TCP
+
 Protocol\ Number: 6
 ```
 
 ## UDP
 ```
 Protocol: UDP
+
 Protocol\ Number: 17
 ```
 
 ## Transport Protocols
 ```
 Protocol: (TCP UDP DCCP SCTP)
+
 Protocol\ Number: (6 17 33 132)
 ```
 
 ## OSPF
 ```
 Protocol: OSPF
+
 Protocol\ Number: 89
 ```
 
@@ -71,12 +77,14 @@ Traffic: HTTPS
 ## SSH Traffic
 ```
 Protocol\ Number:6 AND (Destination\ Port: 22 OR Source\ Port: 22)
+
 Traffic: SSH
 ```
 
 ## DNS Traffic
 ```
-Destination\ Port: 53 OR Source\ Port: 53
+Protocol:[TCP, UDP] AND (Source\ Port:53 OR Destination\ Port:53)
+
 Traffic: DNS
 ```
 
