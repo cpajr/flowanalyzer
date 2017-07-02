@@ -51,7 +51,7 @@ except Exception as argument_error:
 try: 
 	log_level # Check if log level was passed in from command arguments
 except NameError:
-	log_level="WARNING" # Use default logging level
+	log_level="INFO" # Use default logging level
 
 logging.basicConfig(level=str(log_level)) # Set the logging level
 logging.critical('Log level set to ' + str(log_level) + " - OK") # Show the logging level for debug
@@ -261,7 +261,7 @@ if __name__ == "__main__":
 						"_source": {
 						"Flow Type": "IPFIX",
 						"Sensor": sensor_address[0],
-						"Sequence": str(packet_attributes["sequence_number"]),
+						"Sequence": packet_attributes["sequence_number"],
 						"Observation Domain": str(packet_attributes["observation_id"]),
 						"Time": now.strftime("%Y-%m-%dT%H:%M:%S") + ".%03d" % (now.microsecond / 1000) + "Z",
 						}
