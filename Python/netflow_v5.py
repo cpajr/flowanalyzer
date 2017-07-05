@@ -5,29 +5,29 @@
 import time, datetime, socket, struct, sys, json, socket, logging, logging.handlers, getopt, parser_modules
 from struct import *
 from socket import inet_ntoa
-from elasticsearch import Elasticsearch,helpers
+from elasticsearch import Elasticsearch, helpers
 from IPy import IP
 
 # Protocol numbers and types of traffic for comparison
 from protocol_numbers import protocol_type
-from defined_ports import registered_ports,other_ports
+from defined_ports import registered_ports, other_ports
 from netflow_options import *
 
 ### Get the command line arguments ###
 try:
-    arguments = getopt.getopt(sys.argv[1:],"hl:",["--help","log="])
+    arguments = getopt.getopt(sys.argv[1:], "hl:", ["--help", "log="])
     
     for option_set in arguments:
         for opt,arg in option_set:
                         
-            if opt in ('-l','--log'): # Log level
+            if opt in ('-l', '--log'): # Log level
                 arg = arg.upper() # Uppercase for matching and logging.basicConfig() format
-                if arg in ["CRITICAL","ERROR","WARNING","INFO","DEBUG"]:
+                if arg in ["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG"]:
                     log_level = arg # Use what was passed in arguments
 
-            elif opt in ('-h','--help'):
+            elif opt in ('-h', '--help'):
                 with open("./help.txt") as help_file:
-                    print(help_file.read())
+                    print help_file.read()
                 sys.exit()
 
             else:
@@ -37,12 +37,12 @@ except Exception:
     sys.exit("Unsupported or badly formed options, see -h for available arguments.") 
 
 # Set the logging level per https://docs.python.org/2/howto/logging.html
-try: 
+try:
     log_level # Check if log level was passed in from command arguments
 except NameError:
-    log_level="WARNING" # Use default logging level
+    log_level = "WARNING" # Use default logging level
 
-logging.basicConfig(level=str(log_level)) # Set the logging level
+logging.basicConfig(level = str(log_level)) # Set the logging level
 logging.critical('Log level set to ' + str(log_level) + " - OK") # Show the logging level for debug
 
 ### DNS Lookups ###
@@ -84,7 +84,9 @@ try:
     netflow_v5_port
 except NameError: # Not specified, use default
     netflow_v5_port = 2055
-    logging.warning("Netflow v5 port not set in netflow_options.py, defaulting to " + str(netflow_v5_port) + " - OK")
+    logging.warning("Netflow v5 port not set in netflow_options.py, defaulting to " +
+        str(netflow_v5_port) +
+        " - OK")
 
 # Set up the socket listener
 try:
@@ -107,30 +109,44 @@ tcp_udp = parser_modules.ports_and_protocols()
 
 ### Netflow v5 Collector ###
 if __name__ == "__main__":
-    
-    # Stage the flows for the bulk API index operation 
+    # Stage the flows for the bulk API index operation
     flow_dic = []
 
     # Number of cached records
     record_num = 0
     
+    # Continually listen for inbound packets
     while True:
-        
         flow_packet_contents, sensor_address = netflow_sock.recvfrom(65565)
-            
+        
         # Unpack the header
         try:
             logging.info("Unpacking header from " + str(sensor_address[0]))
-            packet_keys = ["netflow_version","flow_count","sys_uptime","unix_secs","unix_nsecs","flow_seq","engine_type","engine_id"] # Netflow v5 packet fields
-            packet_values = struct.unpack('!HHIIIIBB',flow_packet_contents[0:22]) # Version of NF packet and count of Flows in packet
-            packet_contents = dict(zip(packet_keys,packet_values)) # v5 packet fields and values
+            
+            # Netflow v5 packet fields
+            packet_keys = [
+                "netflow_version", 
+                "flow_count",
+                "sys_uptime",
+                "unix_secs",
+                "unix_nsecs",
+                "flow_seq",
+                "engine_type",
+                "engine_id"]
+            
+            packet_values = struct.unpack('!HHIIIIBB', flow_packet_contents[0:22])
+            packet_contents = dict(zip(packet_keys, packet_values)) # v5 packet fields and values
             logging.info(str(packet_contents))
             logging.info("Finished unpacking header from " + str(sensor_address[0]))
         
         # Failed to unpack the header
         except Exception as flow_header_error:
-            logging.warning("Failed unpacking header from " + str(sensor_address[0]) + " - " + str(flow_header_error))
+            logging.warning("Failed unpacking header from " +
+            str(sensor_address[0]) + " - " + str(flow_header_error))
             continue
+        
+        # Timestamp for flow received
+        now = datetime.datetime.utcnow()
         
         # Check the Netflow version
         if packet_contents["netflow_version"] != 5:
@@ -139,44 +155,47 @@ if __name__ == "__main__":
 
         # Iterate over flows in packet
         for flow_num in range(0, packet_contents["flow_count"]):
-            now = datetime.datetime.utcnow() # Timestamp for flow rcv
             logging.info("Parsing flow " + str(flow_num+1))
-            base = packet_header_size + (flow_num * flow_record_size) # Calculate flow starting point
+            
+            # Calculate flow starting point
+            base = packet_header_size + (flow_num * flow_record_size)
             
             # Index for upload
             flow_index = {
-            "_index": str("flow-" + now.strftime("%Y-%m-%d")),
-            "_type": "Flow",
-            "_source": {
-                "Flow Type": "Netflow v5",
-                "IP Protocol Version": 4,
-                "Sensor": sensor_address[0],
-                "Time": now.strftime("%Y-%m-%dT%H:%M:%S") + ".%03d" % (now.microsecond / 1000) + "Z",
-                "Engine Type": packet_contents["engine_type"],
-                "Engine ID": packet_contents["engine_id"]
-                }
+                "_index": str("flow-" + now.strftime("%Y-%m-%d")),
+                "_type": "Flow",
+                "_source": {
+                    "Flow Type": "Netflow v5",
+                    "IP Protocol Version": 4,
+                    "Sensor": sensor_address[0],
+                    "Time": now.strftime("%Y-%m-%dT%H:%M:%S") + ".%03d" % (now.microsecond / 1000) + "Z",
+                    "Engine Type": packet_contents["engine_type"],
+                    "Engine ID": packet_contents["engine_id"]
+                    }
             }
 
             # Unpack flow data, populate flow_index["_source"]
-            (ip_source,
-            ip_destination,
-            next_hop,
-            flow_index["_source"]["Input Interface"],
-            flow_index["_source"]["Output Interface"],
-            flow_index["_source"]["Packets In"],
-            flow_index["_source"]["Bytes In"],
-            flow_index["_source"]["System Uptime Start"],
-            flow_index["_source"]["System Uptime Stop"],
-            flow_index["_source"]["Source Port"],
-            flow_index["_source"]["Destination Port"],
-            pad,
-            flow_index["_source"]["TCP Flags"],
-            flow_index["_source"]["Protocol Number"],
-            flow_index["_source"]["Type of Service"],
-            flow_index["_source"]["Source AS"],
-            flow_index["_source"]["Destination AS"],
-            flow_index["_source"]["Source Mask"],
-            flow_index["_source"]["Destination Mask"]) = struct.unpack('!4s4s4shhIIIIHHcBBBhhBB',flow_packet_contents[base+0:base+46])
+            (
+                ip_source,
+                ip_destination,
+                next_hop,
+                flow_index["_source"]["Input Interface"],
+                flow_index["_source"]["Output Interface"],
+                flow_index["_source"]["Packets In"],
+                flow_index["_source"]["Bytes In"],
+                flow_index["_source"]["System Uptime Start"],
+                flow_index["_source"]["System Uptime Stop"],
+                flow_index["_source"]["Source Port"],
+                flow_index["_source"]["Destination Port"],
+                pad,
+                flow_index["_source"]["TCP Flags"],
+                flow_index["_source"]["Protocol Number"],
+                flow_index["_source"]["Type of Service"],
+                flow_index["_source"]["Source AS"],
+                flow_index["_source"]["Destination AS"],
+                flow_index["_source"]["Source Mask"],
+                flow_index["_source"]["Destination Mask"]
+            ) = struct.unpack('!4s4s4shhIIIIHHcBBBhhBB',flow_packet_contents[base+0:base+46])
 
             # Final unpack, IP addresses via inet_ntoa()
             flow_index["_source"]["IPv4 Source"] = inet_ntoa(ip_source)

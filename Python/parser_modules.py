@@ -87,30 +87,31 @@ class name_lookups(object):
             self.dns_cache[ip_addr] = {}
             self.dns_cache[ip_addr]["Expires"] = int(self.time.time())+1800
             
+            # Run reverse lookup
             try:
-                ip_lookup = str(self.socket.getfqdn(ip_addr)) # Run reverse lookup
+                ip_lookup = str(self.socket.getfqdn(ip_addr))
             except Exception as lookup_message: # DNS lookup failed
                 print(lookup_message)
                 return False
             
             # Successful lookup
-            if ip_lookup != ip_addr:
+            if ip_lookup != ip_addr:                
                 
-                # Update the local cache
-                self.dns_cache[ip_addr]["FQDN"] = ip_lookup # FQDN
+                # Update the local cache with the FQDN
+                self.dns_cache[ip_addr]["FQDN"] = ip_lookup
                 
-                # Parse the FQDN for Domain information
+                # Parse the FQDN for the Domain
                 if "." in ip_lookup:
                     fqdn_exploded = ip_lookup.split('.') # Blow it up
 
                     # Grab TLD and second-level domain
                     domain = str(fqdn_exploded[-2]) + "." + str(fqdn_exploded[-1])
-                        
+                    
                     # Check for .co.uk, .com.jp, etc...
                     if domain in self.second_level_domains:
                         domain = str(fqdn_exploded[-3]) + "." + str(domain) 
-                                        
-                # Hostname, no domain
+                
+                # Use IP, no domain record available
                 else:
                     domain = ip_lookup
                 
@@ -123,9 +124,10 @@ class name_lookups(object):
             
             # No DNS record, use IP instead
             else:
-                self.dns_cache[ip_addr]["FQDN"] = ip_addr # Normalize graphs
-                self.dns_cache[ip_addr]["Domain"] = ip_addr # Normalize graphs
-                self.dns_cache[ip_addr]["Content"] = "Uncategorized" # Default content; Normalize graphs
+                # Use defaults to normalize graphs
+                self.dns_cache[ip_addr]["FQDN"] = ip_addr
+                self.dns_cache[ip_addr]["Domain"] = ip_addr
+                self.dns_cache[ip_addr]["Content"] = "Uncategorized"
         
         return self.dns_cache[ip_addr]
 
