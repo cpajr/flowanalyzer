@@ -1,5 +1,15 @@
 # Copyright (c) 2017, Manito Networks, LLC
 # All rights reserved.
+from struct import unpack
+from socket import inet_ntoa
+from elasticsearch import Elasticsearch, helpers
+from multiprocessing.pool import ThreadPool
+import time, datetime, socket, sys, json, socket, logging, logging.handlers, getopt, parser_modules
+
+logging.basicConfig(level = "DEBUG") # Set the logging level
+
+# Timestamp variable
+now = datetime.datetime.utcnow()
 
 ### Packed Integer Parsers ###
 class name_lookups(object):
@@ -636,6 +646,89 @@ class http_parse(object):
             return "Network Authentication Required"
         else:
             return "Other"
+
+### Netflow v5 parsers ###
+class netflow_v5_parse(object):
+
+    def __init__(self):
+        return
+
+    def header_parse(self, packet):
+        packet_keys = [
+            "netflow_version", 
+            "flow_count",
+            "sys_uptime",
+            "unix_secs",
+            "unix_nsecs",
+            "flow_seq",
+            "engine_type",
+            "engine_id"]
+        
+        packet_values = unpack('!HHIIIIBB', packet[0:22])
+        
+        # v5 packet fields and values
+        packet_contents = dict(zip(packet_keys, packet_values))
+
+        # Timestamp for flow received
+        now = datetime.datetime.utcnow()
+        packet_contents["time"] = now
+
+        logging.info("Packet header info: " + str(packet_contents))
+
+        # Check the Netflow version
+        if packet_contents["netflow_version"] == 5:
+            return packet_contents
+        else:
+            logging.warning("Received a non-v5 Netflow packet - SKIPPING")
+            return False
+    
+    def flow_parse(self, raw_flow_cache):
+        global now
+        parsed_flow_data = {
+            "_index": str("flow-" + now.strftime("%Y-%m-%d")),
+            "_type": "Flow",
+            "_source": {
+                "Flow Type": "Netflow v5",
+                "IP Protocol Version": 4,
+                "Time": now.strftime("%Y-%m-%dT%H:%M:%S") + ".%03d" % (now.microsecond / 1000) + "Z"
+                }
+            }
+        (
+            ip_source,
+            ip_destination,
+            next_hop,
+            parsed_flow_data["_source"]["Input Interface"],
+            parsed_flow_data["_source"]["Output Interface"],
+            parsed_flow_data["_source"]["Packets In"],
+            parsed_flow_data["_source"]["Bytes In"],
+            parsed_flow_data["_source"]["System Uptime Start"],
+            parsed_flow_data["_source"]["System Uptime Stop"],
+            parsed_flow_data["_source"]["Source Port"],
+            parsed_flow_data["_source"]["Destination Port"],
+            pad,
+            parsed_flow_data["_source"]["TCP Flags"],
+            parsed_flow_data["_source"]["Protocol Number"],
+            parsed_flow_data["_source"]["Type of Service"],
+            parsed_flow_data["_source"]["Source AS"],
+            parsed_flow_data["_source"]["Destination AS"],
+            parsed_flow_data["_source"]["Source Mask"],
+            parsed_flow_data["_source"]["Destination Mask"]
+        ) = unpack('!4s4s4shhIIIIHHcBBBhhBB', raw_flow_cache)
+
+        # Get IPv4 addresses in dotted decimal format
+        parsed_flow_data["_source"]["IPv4 Source"] = inet_ntoa(ip_source)
+        parsed_flow_data["_source"]["IPv4 Destination"] = inet_ntoa(ip_destination)
+        parsed_flow_data["_source"]["IPv4 Next Hop"] = inet_ntoa(next_hop)
+        
+        logging.debug("Current flow data: " + str(parsed_flow_data))
+        return parsed_flow_data
+
+    def flow_pool(self, raw_flow_cache):
+        pool = ThreadPool()
+        results = pool.map(self.flow_parse, raw_flow_cache)
+        pool.close()
+        pool.join()
+        return results
 
 ### Netflow v9 Parsers ###
 class netflowv9_parse(object):
