@@ -51,27 +51,27 @@ class name_lookups(object):
         dns_cache[key]["Domain"] = special_ips[key]
         dns_cache[key]["Content"] = "Uncategorized"
 
-    second_level_domains = {
-    "co.id", # Indonesia
-    "co.in", # India
-    "co.jp", # Japan
-    "co.nz", # New Zealand
-    "co.uk", # United Kingdom
-    "co.za", # South Africa
-    "com.ar", # Argentina
-    "com.au", # Australia
-    "com.bn", # Brunei
-    "com.br", # Brazil
-    "com.cn", # People's Republic of China
-    "com.gh", # Ghana
-    "com.hk", # Hong Kong
-    "com.mx", # Mexico
-    "com.sg", # Singapore
-    "edu.au", # Australia
-    "net.au", # Australia
-    "net.il", # Israel
-    "org.au" # Australia
-    }
+	second_level_domains = {
+        "co.id", # Indonesia
+        "co.in", # India
+        "co.jp", # Japan
+        "co.nz", # New Zealand
+        "co.uk", # United Kingdom
+        "co.za", # South Africa
+        "com.ar", # Argentina
+        "com.au", # Australia
+        "com.bn", # Brunei
+        "com.br", # Brazil
+        "com.cn", # People's Republic of China
+        "com.gh", # Ghana
+        "com.hk", # Hong Kong
+        "com.mx", # Mexico
+        "com.sg", # Singapore
+        "edu.au", # Australia
+        "net.au", # Australia
+        "net.il", # Israel
+        "org.au" # Australia
+        }
 
     def __init__(self):
         return

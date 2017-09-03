@@ -18,7 +18,7 @@ try:
     arguments = getopt.getopt(sys.argv[1:], "hl:", ["--help", "log="])
     
     for option_set in arguments:
-        for opt,arg in option_set:
+        for opt, arg in option_set:
                         
             if opt in ('-l', '--log'): # Log level
                 arg = arg.upper() # Uppercase for matching and logging.basicConfig() format
@@ -195,7 +195,7 @@ if __name__ == "__main__":
                 flow_index["_source"]["Destination AS"],
                 flow_index["_source"]["Source Mask"],
                 flow_index["_source"]["Destination Mask"]
-            ) = struct.unpack('!4s4s4shhIIIIHHcBBBhhBB',flow_packet_contents[base+0:base+46])
+            ) = struct.unpack('!4s4s4shhIIIIHHcBBBhhBB', flow_packet_contents[base+0:base+46])
 
             # Final unpack, IP addresses via inet_ntoa()
             flow_index["_source"]["IPv4 Source"] = inet_ntoa(ip_source)
@@ -214,7 +214,7 @@ if __name__ == "__main__":
             
             # If the protocol is TCP or UDP try to apply traffic labels
             if flow_index["_source"]["Protocol Number"] in ([6, 17, 33, 132]):        
-                traffic_and_category = tcp_udp.port_traffic_classifier(flow_index["_source"]["Source Port"],flow_index["_source"]["Destination Port"])
+                traffic_and_category = tcp_udp.port_traffic_classifier(flow_index["_source"]["Source Port"], flow_index["_source"]["Destination Port"])
                 flow_index["_source"]["Traffic"] = traffic_and_category["Traffic"]
                 flow_index["_source"]["Traffic Category"] = traffic_and_category["Traffic Category"]
 
@@ -229,17 +229,17 @@ if __name__ == "__main__":
             if dns is True:    
                 
                 # Source DNS
-                source_lookups = name_lookups.ip_names(4,flow_index["_source"]["IPv4 Source"])
+                source_lookups = name_lookups.ip_names(4, flow_index["_source"]["IPv4 Source"])
                 flow_index["_source"]["Source FQDN"] = source_lookups["FQDN"]
                 flow_index["_source"]["Source Domain"] = source_lookups["Domain"]
 
                 # Destination DNS
-                destination_lookups = name_lookups.ip_names(4,flow_index["_source"]["IPv4 Destination"])
+                destination_lookups = name_lookups.ip_names(4, flow_index["_source"]["IPv4 Destination"])
                 flow_index["_source"]["Destination FQDN"] = destination_lookups["FQDN"]
                 flow_index["_source"]["Destination Domain"] = destination_lookups["Domain"]
 
                 # Content
-                src_dest_categories = [source_lookups["Content"],destination_lookups["Content"]]
+                src_dest_categories = [source_lookups["Content"], destination_lookups["Content"]]
                 
                 try: # Pick unique domain Content != "Uncategorized"
                     unique_content = [category for category in src_dest_categories if category != "Uncategorized"]
@@ -260,7 +260,7 @@ if __name__ == "__main__":
         if record_num >= bulk_insert_count:
             
             try:
-                helpers.bulk(es,flow_dic)
+                helpers.bulk(es, flow_dic)
                 logging.info(str(record_num)+" flow(s) uploaded to Elasticsearch - OK")
             except ValueError as bulk_index_error:
                 logging.critical(str(record_num)+" flow(s) DROPPED, unable to index flows - FAIL")

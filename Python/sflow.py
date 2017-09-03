@@ -11,8 +11,8 @@ try:
 except ImportError:
 	pass
 
-from socket import inet_ntoa,inet_ntop
-from elasticsearch import Elasticsearch,helpers
+from socket import inet_ntoa, inet_ntop
+from elasticsearch import Elasticsearch, helpers
 from IPy import IP
 from xdrlib import Unpacker
 
@@ -20,17 +20,17 @@ from netflow_options import * # Flow Options
 
 ### Get the command line arguments ###
 try:
-	arguments = getopt.getopt(sys.argv[1:],"hl:",["--help","log="])
+	arguments = getopt.getopt(sys.argv[1:], "hl:", ["--help", "log="])
 	
 	for option_set in arguments:
-		for opt,arg in option_set:
+		for opt, arg in option_set:
 						
-			if opt in ('-l','--log'): # Log level
+			if opt in ('-l', '--log'): # Log level
 				arg = arg.upper() # Uppercase for matching and logging.basicConfig() format
-				if arg in ["CRITICAL","ERROR","WARNING","INFO","DEBUG"]:
+				if arg in ["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG"]:
 					log_level = arg # Use what was passed in arguments
 
-			elif opt in ('-h','--help'): # Help file
+			elif opt in ('-h', '--help'): # Help file
 				with open("./help.txt") as help_file:
 					print(help_file.read())
 				sys.exit()
@@ -45,7 +45,7 @@ except:
 try: 
 	log_level # Check if log level was passed in from command arguments
 except NameError:
-	log_level="WARNING" # Use default logging level
+	log_level = "WARNING" # Use default logging level
 
 logging.basicConfig(level=str(log_level)) # Set the logging level
 logging.warning('Log level set to ' + str(log_level) + " - OK") # Show the logging level for debug
@@ -138,14 +138,14 @@ if __name__ == "__main__":
 		### sFlow Datagram End ###
 
 		### sFlow Samples Start ###			
-		for sample_num in range(0,datagram_info["Sample Count"]): # For each sample in the datagram
+		for sample_num in range(0, datagram_info["Sample Count"]): # For each sample in the datagram
 
 			### Sample Header Start ###
 			enterprise_format_num = enterprise_format_numbers(unpacked_data.unpack_uint()) # Enterprise number and format
 			sample_length = int(unpacked_data.unpack_uint()) # Sample Length		
 			
 			logging.info("Sample " + str(sample_num+1) + " of " + str(datagram_info["Sample Count"]) + ", type " + str(enterprise_format_num) + " length " + str(sample_length))
-
+			
 			try:
 				unpacked_sample_data = Unpacker(unpacked_data.unpack_fopaque(sample_length)) # Unpack the sample data block	
 				logging.info("Unpacked opaque sample data chunk - OK")

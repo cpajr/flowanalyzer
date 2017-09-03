@@ -4,7 +4,7 @@
 ### Imports ###
 import time, datetime, socket, struct, sys, os, json, socket, collections, itertools, logging, logging.handlers, getopt
 from struct import *
-from elasticsearch import Elasticsearch,helpers
+from elasticsearch import Elasticsearch, helpers
 from IPy import IP
 
 # Parsing functions
@@ -16,17 +16,17 @@ from netflow_options import *
 
 ### Get the command line arguments ###
 try:
-    arguments = getopt.getopt(sys.argv[1:],"hl:",["--help","log="])
+    arguments = getopt.getopt(sys.argv[1:], "hl:", ["--help", "log="])
     
     for option_set in arguments:
-        for opt,arg in option_set:
+        for opt, arg in option_set:
                         
-            if opt in ('-l','--log'): # Log level
+            if opt in ('-l', '--log'): # Log level
                 arg = arg.upper() # Uppercase for matching and logging.basicConfig() format
-                if arg in (["CRITICAL","ERROR","WARNING","INFO","DEBUG"]):
+                if arg in (["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG"]):
                     log_level = arg # Use what was passed in arguments
 
-            elif opt in ('-h','--help'): # Help file
+            elif opt in ('-h', '--help'): # Help file
                 with open("./help.txt") as help_file:
                     print(help_file.read())
                 sys.exit()
@@ -42,7 +42,7 @@ except Exception:
 try: 
     log_level # Check if log level was passed in from command arguments
 except NameError:
-    log_level="WARNING" # Use default logging level
+    log_level = "WARNING" # Use default logging level
 
 logging.basicConfig(level=str(log_level)) # Set the logging level
 logging.warning('Log level set to ' + str(log_level) + " - OK") # Show the logging level for debug
@@ -144,7 +144,7 @@ if __name__ == "__main__":
             packet["unix_secs"],
             packet["sequence_number"],
             packet["source_id"]
-            ) = struct.unpack('!HHLLLL',flow_packet_contents[0:20])    # Unpack header
+            ) = struct.unpack('!HHLLLL', flow_packet_contents[0:20]) # Unpack header
 
             packet["Sensor"] = str(sensor_address[0])
             pointer += 20 # Move past the packet header
@@ -165,7 +165,7 @@ if __name__ == "__main__":
             
             # Unpack flow set ID and the length
             try:
-                (flow_set_id, flow_set_length) = struct.unpack('!HH',flow_packet_contents[pointer:pointer+4])
+                (flow_set_id, flow_set_length) = struct.unpack('!HH', flow_packet_contents[pointer:pointer+4])
                 logging.info("Found flow ID " + str(flow_set_id) + ", length " + str(flow_set_length) + " at " + str(pointer))
             except:
                 logging.info("Out of bytes to unpack, stopping - OK")

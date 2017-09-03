@@ -11,8 +11,8 @@ try:
 except ImportError:
     pass
 
-from socket import inet_ntoa,inet_ntop
-from elasticsearch import Elasticsearch,helpers
+from socket import inet_ntoa, inet_ntop
+from elasticsearch import Elasticsearch, helpers
 from IPy import IP
 
 # Parsing functions
@@ -25,17 +25,17 @@ from protocol_numbers import *
 
 ### Get command line arguments ###
 try:
-    arguments = getopt.getopt(sys.argv[1:],"hl:",["--help","log="])
+    arguments = getopt.getopt(sys.argv[1:], "hl:", ["--help", "log="])
     
     for option_set in arguments:
-        for opt,arg in option_set:
+        for opt, arg in option_set:
                         
-            if opt in ('-l','--log'): # Log level
+            if opt in ('-l', '--log'): # Log level
                 arg = arg.upper() # Uppercase for matching and logging.basicConfig() format
-                if arg in ["CRITICAL","ERROR","WARNING","INFO","DEBUG"]:
+                if arg in ["CRITICAL", "ERROR", "WARNING", "INFO", "DEBUG"]:
                     log_level = arg # Use what was passed in arguments
 
-            elif opt in ('-h','--help'): # Help file
+            elif opt in ('-h', '--help'): # Help file
                 with open("./help.txt") as help_file:
                     print(help_file.read())
                 sys.exit()
@@ -51,7 +51,7 @@ except Exception as argument_error:
 try: 
     log_level # Check if log level was passed in from command arguments
 except NameError:
-    log_level="WARNING" # Use default logging level
+    log_level = "WARNING" # Use default logging level
 
 logging.basicConfig(level=str(log_level)) # Set the logging level
 logging.critical('Log level set to ' + str(log_level) + " - OK") # Show the logging level for debug
@@ -135,7 +135,7 @@ if __name__ == "__main__":
             packet_attributes["export_time"],
             packet_attributes["sequence_number"],
             packet_attributes["observation_id"]
-            ) = struct.unpack('!HHLLL',flow_packet_contents[0:16]) # Unpack header
+            ) = struct.unpack('!HHLLL', flow_packet_contents[0:16]) # Unpack header
 
             packet_attributes["sensor"] = sensor_address[0] # For debug purposes
 
@@ -164,7 +164,7 @@ if __name__ == "__main__":
             # Determine if it's a template set or a data set and the size
             try:
                 logging.info("Unpacking ID and length at byte position " + str(byte_position))
-                (flow_set_id, flow_set_length) = struct.unpack('!HH',flow_packet_contents[byte_position:byte_position+4])
+                (flow_set_id, flow_set_length) = struct.unpack('!HH', flow_packet_contents[byte_position:byte_position+4])
                 logging.info("Flow ID, Length " + str((flow_set_id, flow_set_length)))
             except Exception as id_unpack_error:
                 logging.info("Out of bytes to unpack, breaking")
@@ -189,7 +189,7 @@ if __name__ == "__main__":
 
                 while template_position < final_template_position:
                     logging.info("Unpacking template set at " + str(template_position))
-                    (template_id, template_id_length) = struct.unpack('!HH',flow_packet_contents[template_position:template_position+4])
+                    (template_id, template_id_length) = struct.unpack('!HH', flow_packet_contents[template_position:template_position+4])
                     logging.info("Found (ID, Elements) -- " + str((template_id, template_id_length)))
                     
                     template_position += 4 # Advance

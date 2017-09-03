@@ -9,9 +9,7 @@ from parser_modules import mac_address # Field parsing functions
 from sflow_parsers import *  # Functions to parse headers and format numbers
 
 # Generic Interface (Counter, Enterprise 0, Format 1)
-def gen_int_counter(
-	data # type: "XDR Data"
-	):
+def gen_int_counter(data):
 	"""Generic Interface Counter - Type: Counter, Enterprise: 0, Format: 1"""
 	sample_data = {} # Cache
 	sample_data["Interface Index"] = int(data.unpack_uint())
@@ -59,9 +57,7 @@ def gen_int_counter(
 	return sample_data
 
 # Ethernet Interface (Counter, Enterprise 0, Format 2)
-def eth_int_counter(
-	data # type: "XDR Data"
-	):
+def eth_int_counter(data):
 	"""Ethernet Interface Counter - Type: Counter, Enterprise: 0, Format: 2"""
 	sample_data = {} # Cache
 	sample_data["Alignment Errors"] = int(data.unpack_uint())
@@ -81,9 +77,7 @@ def eth_int_counter(
 	return sample_data
 
 # Token Ring (Counter, Enterprise 0, Format 3)
-def token_ring_counter(
-	data # type: "XDR Data"
-	):
+def token_ring_counter(data):
 	"""Token Ring Interface Counter - Type: Counter, Enterprise: 0, Format: 3"""
 	sample_data = {} # Cache
 	sample_data["Line Errors"] = int(data.unpack_uint())
@@ -108,9 +102,7 @@ def token_ring_counter(
 	return sample_data
 
 # 100 BaseVG Interface (Counter, Enterprise 0, Format 4)
-def basevg_int_counter(
-	data # type: "XDR Data"
-	):
+def basevg_int_counter(data):
 	"""100 BaseVG Interface Counter - Type: Counter, Enterprise: 0, Format: 4"""
 	sample_data = {} # Cache
 	sample_data["High Priority Frames In"] = int(data.unpack_uint())
@@ -131,9 +123,7 @@ def basevg_int_counter(
 	return sample_data
 
 # VLAN (Counter, Enterprise 0, Format 5)
-def vlan_counter(
-	data # type: "XDR Data"
-	):
+def vlan_counter(data):
 	"""VLAN Counter - Type: Counter, Enterprise: 0, Format: 5"""
 	sample_data = {} # Cache
 	sample_data["VLAN ID"] = int(data.unpack_uint())
