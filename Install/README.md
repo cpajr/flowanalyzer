@@ -89,6 +89,8 @@ This should output the following message, indicating the template has been creat
 }
 ```
 
+Additional output may also be included with details depending on the version of Elasticsearch.
+
 ### sFlow Index
 The build_sflow_index_elk5.sh script creates the default index for storing sFlow data in Elasticsearch. A separate script and index are used because sFlow data can be very different from network flow data depending on what sFlow counter records are being exported.
 
@@ -103,6 +105,8 @@ This should output the following message, indicating the template has been creat
     "acknowledged" : true
 }
 ```
+
+Additional output may also be included with details depending on the version of Elasticsearch.
 
 ## Elasticsearch Tuning
 One of the biggest ways to destroy Elasticsearch performance is to not properly allocate the right sized heap. The creators of Elasticsearch recommend setting
