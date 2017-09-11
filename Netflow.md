@@ -6,7 +6,7 @@ Think about flow data as _metadata about network traffic_.
 To make this all happen we need three things:
 
 * Exporters - Routers, Switches
-* Protocols - Netflow, IPFIX
+* Protocols - Netflow v5, v9, or IPFIX (v10)
 * Collectors - Flow Analyzer
 
 Exporters include routers and switches, which are operating on the network while also tallying network flow data. Network flow protocols like Netflow and IPFIX are used to transport the tallied flow data to the collectors. The flow data collectors listen for formatted flow packets and parse their information. That flow information gets shipped to a database or other storage.
